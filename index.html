@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sorteador de Números</title>
+  <style>
+    :root {
+      --bg: #05070f;
+      --card: #0d1220;
+      --cyan: #27d7ff;
+      --green: #27ff9a;
+      --purple: #a855f7;
+      --text: #f5f7fb;
+      --muted: #a8b3c7;
+      --danger: #ff5c7a;
+      --yellow: #f4d35e;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(39, 215, 255, 0.22), transparent 32%),
+        radial-gradient(circle at bottom right, rgba(39, 255, 154, 0.16), transparent 35%),
+        var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+    }
+
+    .app {
+      width: min(480px, 100%);
+      background: linear-gradient(145deg, rgba(13, 18, 32, 0.96), rgba(8, 12, 22, 0.98));
+      border: 1px solid rgba(39, 215, 255, 0.35);
+      box-shadow: 0 0 40px rgba(39, 215, 255, 0.16), 0 0 60px rgba(39, 255, 154, 0.10);
+      border-radius: 26px;
+      padding: 22px;
+    }
+
+    .brand {
+      text-align: center;
+      font-size: 13px;
+      color: var(--green);
+      letter-spacing: 0.4px;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      margin: 6px 0 8px;
+      font-size: 29px;
+      line-height: 1.1;
+      text-align: center;
+    }
+
+    .subtitle {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 15px;
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .form {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .field {
+      background: rgba(255, 255, 255, 0.045);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 13px;
+    }
+
+    label {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      border: 1px solid rgba(39, 255, 154, 0.28);
+      border-radius: 14px;
+      padding: 14px;
+      background: #070b15;
+      color: var(--text);
+      font-size: 18px;
+      font-weight: 800;
+      outline: none;
+    }
+
+    input[type="number"]:focus {
+      border-color: rgba(39, 255, 154, 0.78);
+      box-shadow: 0 0 18px rgba(39, 255, 154, 0.12);
+    }
+
+    .toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      color: var(--text);
+      font-size: 15px;
+      text-transform: none;
+      letter-spacing: 0;
+      margin: 0;
+    }
+
+    input[type="checkbox"] {
+      width: 22px;
+      height: 22px;
+      accent-color: var(--green);
+      cursor: pointer;
+    }
+
+    button {
+      width: 100%;
+      border: 0;
+      border-radius: 18px;
+      padding: 15px 16px;
+      margin-top: 12px;
+      color: #03100b;
+      font-weight: 900;
+      font-size: 17px;
+      cursor: pointer;
+      background: linear-gradient(90deg, var(--cyan), var(--green));
+      box-shadow: 0 0 22px rgba(39, 255, 154, 0.18);
+    }
+
+    button.secondary {
+      margin-top: 10px;
+      color: var(--text);
+      background: linear-gradient(90deg, rgba(39, 215, 255, 0.20), rgba(168, 85, 247, 0.20));
+      border: 1px solid rgba(39, 215, 255, 0.28);
+    }
+
+    .result-box {
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: 20px;
+      background: #070b15;
+      border: 1px solid rgba(39, 255, 154, 0.34);
+      box-shadow: inset 0 0 24px rgba(39, 215, 255, 0.06);
+      text-align: center;
+      min-height: 122px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .result-label {
+      color: var(--muted);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.9px;
+    }
+
+    .result {
+      color: var(--green);
+      font-size: 38px;
+      line-height: 1.18;
+      font-weight: 900;
+      overflow-wrap: anywhere;
+      text-shadow: 0 0 18px rgba(39, 255, 154, 0.24);
+    }
+
+    .message {
+      min-height: 24px;
+      margin-top: 12px;
+      color: var(--green);
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .notice {
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 16px;
+      background: rgba(39, 255, 154, 0.07);
+      border: 1px solid rgba(39, 255, 154, 0.18);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .footer {
+      margin-top: 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .footer a {
+      color: var(--green);
+      text-decoration: none;
+    }
+
+    @media (min-width: 460px) {
+      .form.two-cols {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .wide {
+        grid-column: span 2;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <div class="brand">&lt;/&gt; Programar é Fácil com IA</div>
+    <h1>Sorteador de Números 🎲</h1>
+    <p class="subtitle">Escolha o intervalo, defina a quantidade e sorteie direto no navegador.</p>
+
+    <section class="form two-cols">
+      <div class="field">
+        <label for="min">Número mínimo</label>
+        <input id="min" type="number" value="1" />
+      </div>
+
+      <div class="field">
+        <label for="max">Número máximo</label>
+        <input id="max" type="number" value="100" />
+      </div>
+
+      <div class="field">
+        <label for="quantity">Quantidade</label>
+        <input id="quantity" type="number" value="1" min="1" />
+      </div>
+
+      <div class="field">
+        <label class="toggle" for="repeat">
+          Permitir repetição
+          <input id="repeat" type="checkbox" />
+        </label>
+      </div>
+    </section>
+
+    <button onclick="drawNumbers()">Sortear números</button>
+    <button class="secondary" onclick="copyResult()">Copiar resultado</button>
+
+    <section class="result-box">
+      <div class="result-label">Resultado do sorteio</div>
+      <div class="result" id="result">Clique em sortear</div>
+    </section>
+
+    <div class="message" id="message"></div>
+
+    <div class="notice">
+      🎲 Tudo funciona no seu navegador. Ideal para sorteios simples, brincadeiras, rifas e decisões rápidas.
+    </div>
+
+    <div class="footer">
+      Feito por você com apoio de <a href="https://www.instagram.com/programarefacil.ia" target="_blank">@programarefacil.ia</a> 🚀
+    </div>
+  </main>
+
+  <script>
+    const resultEl = document.getElementById("result");
+    const messageEl = document.getElementById("message");
+
+    function randomInt(min, max) {
+      const range = max - min + 1;
+      const array = new Uint32Array(1);
+      crypto.getRandomValues(array);
+      return min + (array[0] % range);
+    }
+
+    function drawNumbers() {
+      const min = Number(document.getElementById("min").value);
+      const max = Number(document.getElementById("max").value);
+      const quantity = Number(document.getElementById("quantity").value);
+      const allowRepeat = document.getElementById("repeat").checked;
+
+      messageEl.style.color = "var(--green)";
+      messageEl.textContent = "";
+
+      if (!Number.isInteger(min) || !Number.isInteger(max) || !Number.isInteger(quantity)) {
+        showError("Use apenas números inteiros.");
+        return;
+      }
+
+      if (min > max) {
+        showError("O número mínimo não pode ser maior que o máximo.");
+        return;
+      }
+
+      if (quantity < 1) {
+        showError("A quantidade precisa ser pelo menos 1.");
+        return;
+      }
+
+      const available = max - min + 1;
+
+      if (!allowRepeat && quantity > available) {
+        showError("Sem repetição, a quantidade não pode ser maior que o intervalo disponível.");
+        return;
+      }
+
+      const result = [];
+
+      if (allowRepeat) {
+        for (let i = 0; i < quantity; i++) {
+          result.push(randomInt(min, max));
+        }
+      } else {
+        const pool = [];
+        for (let n = min; n <= max; n++) pool.push(n);
+
+        for (let i = 0; i < quantity; i++) {
+          const index = randomInt(0, pool.length - 1);
+          result.push(pool[index]);
+          pool.splice(index, 1);
+        }
+      }
+
+      resultEl.textContent = result.join(", ");
+      messageEl.textContent = quantity === 1 ? "Número sorteado!" : "Números sorteados!";
+    }
+
+    function showError(text) {
+      messageEl.style.color = "var(--danger)";
+      messageEl.textContent = text;
+    }
+
+    async function copyResult() {
+      const value = resultEl.textContent;
+
+      if (!value || value === "Clique em sortear") {
+        showError("Faça um sorteio primeiro.");
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(value);
+        messageEl.style.color = "var(--green)";
+        messageEl.textContent = "Resultado copiado!";
+      } catch (error) {
+        messageEl.style.color = "var(--yellow)";
+        messageEl.textContent = "Não consegui copiar automaticamente. Selecione e copie manualmente.";
+      }
+    }
+
+    drawNumbers();
+  </script>
+</body>
+</html>
